@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\MarathonController;
+use App\Http\Middleware\EnsureHasGuestToken;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware(EnsureHasGuestToken::class)->group(function () {
+    Route::get('/', [IndexController::class, 'index']);
+
+    Route::post('/marathons', [MarathonController::class, 'store'])->name('marathons.store');
+    Route::get('/marathons/{marathon:uuid}', [MarathonController::class, 'show'])->name('marathons.show');
 });
