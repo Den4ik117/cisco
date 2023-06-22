@@ -1,9 +1,11 @@
 <template>
     <div class="flex flex-col gap-4">
-        <div class="flex gap-2 items-center">
+        <div v-if="!task.image_content" class="flex gap-2 items-center">
             <span class="text-xs text-gray-500 whitespace-nowrap">Вопрос без изображения</span>
             <span class="h-px w-full bg-gray-500"></span>
         </div>
+
+        <img v-else class="max-w-full" :src="task.image_content" :alt="`Фотография к задаче с номером ${task.id}`">
 
         <h2 class="text-sm font-medium">{{ task.name }}</h2>
 
@@ -16,7 +18,7 @@
                 >
                     <input :id="`answer-${option.id}`" class="hidden" type="radio" name="answers" :disabled="chosen" :value="option.id" v-model="answers[0]">
                     <span>{{ index + 1 }}.</span>
-                    <span>{{ option }}</span>
+                    <span>{{ option.name }}</span>
                 </label>
             </li>
         </ol>
@@ -94,7 +96,7 @@ export default defineComponent({
                 'bg-red-500': (option.is_answer && !option.is_chosen) || (!option.is_answer && option.is_chosen),
                 'bg-slate-800': !option.is_answer && !option.is_chosen,
             } : {
-                'bg-slate-800 hover:bg-slate-700': true,
+                'bg-slate-800 hover:bg-slate-700': !this.answers.includes(option.id),
                 'bg-slate-700': this.answers.includes(option.id),
             };
         },

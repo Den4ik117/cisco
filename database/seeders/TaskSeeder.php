@@ -8,6 +8,8 @@ use Exception;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TaskSeeder extends Seeder
 {
@@ -20,10 +22,19 @@ class TaskSeeder extends Seeder
         $json = json_decode($content, true);
 
         foreach (Arr::get($json, 'content', []) as $task) {
+            preg_match('/TEMP="(.+\.(png|jpg|jpeg))"/', $task[1], $matches);
+            $filename = null;
+
+            if (isset($matches[1])) {
+                $path = "https://mintbrain.github.io/ciscoTest/pics/$matches[1]";
+                $uuid = Str::orderedUuid()->toString();
+                $filename = "/images/$uuid.$matches[2]";
+                Storage::put($filename, file_get_contents($path));
+            }
+
             $newTask = Task::query()->create([
-                'name' => $task[1],
-//                'content' => $task[2],
-//                'answer' => $task[3],
+                'name' => preg_replace('/TEMP="(.+\.(png|jpg|jpeg))"/', '', $task[1]),
+                'image_content' => $filename,
                 'type' => count($task[3]) <= 1 ? TaskType::OneAnswer : TaskType::MultipleAnswers,
             ]);
 

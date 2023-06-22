@@ -12,7 +12,7 @@
 </head>
 <body class="antialiased bg-slate-900 text-white">
 <div id="app">
-    <main class="max-w-md mx-auto px-4 py-16">
+    <main class="max-w-md mx-auto px-4 py-4">
         @yield('content')
     </main>
 </div>

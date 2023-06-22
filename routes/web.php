@@ -17,8 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(EnsureHasGuestToken::class)->group(function () {
-    Route::get('/', [IndexController::class, 'index']);
+    Route::get('/', [IndexController::class, 'index'])->name('index');
 
+    Route::get('/marathons', [MarathonController::class, 'index'])->name('marathons.index');
     Route::post('/marathons', [MarathonController::class, 'store'])->name('marathons.store');
     Route::get('/marathons/{marathon:uuid}', [MarathonController::class, 'show'])->name('marathons.show');
 });

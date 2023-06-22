@@ -18,4 +18,14 @@ class Marathon extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function success_tasks(): HasMany
+    {
+        return $this->hasMany(Task::class)->where('is_success', true);
+    }
+
+    public function error_tasks(): HasMany
+    {
+        return $this->hasMany(Task::class)->where('is_success', false);
+    }
 }

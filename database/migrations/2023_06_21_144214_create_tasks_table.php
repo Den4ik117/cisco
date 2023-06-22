@@ -15,12 +15,11 @@ return new class extends Migration
             $table->id();
             $table->uuid();
             $table->text('name');
-//            $table->json('content');
             $table->string('image_content')->nullable();
-//            $table->json('answer');
             $table->string('type');
             $table->foreignId('marathon_id')->nullable()->constrained('marathons')->cascadeOnDelete();
             $table->foreignId('task_id')->nullable()->constrained('tasks')->cascadeOnDelete();
+            $table->foreignId('module_id')->nullable()->constrained('modules')->cascadeOnDelete();
             $table->boolean('is_success')->nullable();
             $table->timestamps();
         });
