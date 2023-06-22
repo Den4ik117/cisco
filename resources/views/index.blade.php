@@ -5,10 +5,10 @@
 @section('content')
     <div class="flex flex-col gap-4">
         <div class="flex justify-center">
-            <div class="flex items-center gap-2">
+            <a class="flex items-center gap-2" href="https://deniszagvozdin.ru/" target="_blank">
                 <img src="{{ Vite::asset('resources/images/DenisZagvozdinLogo.svg') }}" alt="Логотип Дениса Загвоздина" width="24" height="24">
                 <span class="text-sm font-bold">Denis Zagvozdin</span>
-            </div>
+            </a>
         </div>
 
         <div class="bg-slate-800 rounded px-4 py-2">
