@@ -19,5 +19,6 @@
 
 @vite(['resources/js/app.js'])
 @stack('scripts')
+@include('layouts.metrics')
 </body>
 </html>
