@@ -2,6 +2,17 @@
 
 @section('title', 'Билеты по CISCO')
 
+@section('head')
+    <meta name="description" content="Это сайт, позволяющий выучить билеты, которые будут на экзамене по CISCO">
+    <meta property="og:title" content="Билеты по CISCO">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ config('app.url') }}">
+    <meta property="og:image" content="{{ Vite::asset('resources/images/Promo.jpg') }}">
+    <meta property="og:description" content="Это сайт, позволяющий выучить билеты, которые будут на экзамене по CISCO">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:site_name" content="Билеты по CISCO">
+@endsection
+
 @section('content')
     <div class="flex flex-col gap-4">
         <div class="flex justify-center">
