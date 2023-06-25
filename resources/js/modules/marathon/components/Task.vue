@@ -154,7 +154,7 @@ export default defineComponent({
             }
 
             if (e.key === 'Enter') {
-                this.apply();
+                this.chosen ? this.next() : this.apply();
             }
 
             if (e.key === 'Escape') {
