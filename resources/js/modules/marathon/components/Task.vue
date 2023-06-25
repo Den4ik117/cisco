@@ -48,9 +48,13 @@
             <Loader v-show="loading"/>
         </button>
 
-        <div v-if="chosen">
+        <template v-if="chosen">
             <div class="text-sm">Правильный ответ: {{ task.options.filter(option => option.is_answer).map(option => option.name).join(', ') }}</div>
-        </div>
+
+            <button class="gap-2 bg-blue-500 hover:bg-blue-600 disabled:hover:bg-blue-500 disabled:opacity-75 rounded px-4 py-2 text-xs font-medium" type="button" @click="next">
+                Следующий вопрос
+            </button>
+        </template>
     </div>
 </template>
 
@@ -139,6 +143,9 @@ export default defineComponent({
                 }
             }
         },
+        next() {
+            this.$emit('next');
+        }
     },
     mounted() {
         document.addEventListener('keydown', (e) => {
@@ -159,7 +166,7 @@ export default defineComponent({
             }
 
             if (e.key === 'ArrowRight') {
-                this.$emit('next');
+                this.next();
             }
         });
     }
