@@ -51,6 +51,10 @@ class TaskController extends Controller
             $options->toQuery()->update([
                 'is_chosen' => true,
             ]);
+
+            $task->load(['options']);
+
+            $isSuccess = $task->options->every(fn (Option $option) => (!!$option->is_answer) === (!!$option->is_chosen));
         } else {
             $validated = $request->validate([
                 'answers' => 'required|array|size:1',
@@ -62,14 +66,16 @@ class TaskController extends Controller
                 ->where('name', $validated['answers'][0])
                 ->get();
 
-            $options->toQuery()->update([
-                'is_chosen' => true,
-            ]);
+            if ($options->isNotEmpty()) {
+                $options->toQuery()->update([
+                    'is_chosen' => true,
+                ]);
+            }
+
+            $task->load(['options']);
+
+            $isSuccess = $options->isNotEmpty();
         }
-
-        $task->load(['options']);
-
-        $isSuccess = $task->options->every(fn (Option $option) => (!!$option->is_answer) === (!!$option->is_chosen));
 
         $task->update([
             'is_success' => $isSuccess,
