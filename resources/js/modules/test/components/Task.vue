@@ -109,8 +109,8 @@ export default defineComponent({
     methods: {
         classes(choice) {
             return this.chosen ? {
-                'bg-green-500': choice.option.is_answer && choice.is_chosen,
-                'bg-red-500': (choice.option.is_answer && !choice.is_chosen) || (!choice.option.is_answer && choice.is_chosen),
+                'bg-green-500': choice.option.is_answer,
+                'bg-red-500': !choice.option.is_answer && choice.is_chosen,
                 'bg-slate-800': !choice.option.is_answer && !choice.is_chosen,
             } : {
                 'bg-slate-800 hover:bg-slate-700': !this.answers.includes(choice.id),
