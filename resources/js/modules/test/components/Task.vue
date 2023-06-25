@@ -112,9 +112,11 @@ export default defineComponent({
                 'bg-green-500': choice.option.is_answer,
                 'bg-red-500': !choice.option.is_answer && choice.is_chosen,
                 'bg-slate-800': !choice.option.is_answer && !choice.is_chosen,
+                'border-l-4 border-slate-600': choice.is_chosen,
+                'border-l-4 border-transparent': !choice.is_chosen,
             } : {
-                'bg-slate-800 hover:bg-slate-700': !this.answers.includes(choice.id),
-                'bg-slate-700': this.answers.includes(choice.id),
+                'bg-slate-800 hover:bg-slate-700 border-l-4 border-transparent': !this.answers.includes(choice.id),
+                'bg-slate-700 border-l-4 border-slate-600': this.answers.includes(choice.id),
             };
         },
         apply() {
