@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marathon;
+use App\Models\Option;
 use App\Models\Task;
 use App\Models\Token;
 use Illuminate\Http\Request;
@@ -21,15 +22,28 @@ class MarathonController extends Controller
         return view('marathons.index', compact(['marathons']));
     }
 
+    public function create(Request $request)
+    {
+        $tasks_count = Task::query()
+            ->whereNull('task_id')
+            ->count();
+
+        return view('marathons.create', compact(['tasks_count']));
+    }
+
     public function store(Request $request)
     {
         $marathon = Marathon::query()->create([
             'token_uuid' => $request->cookie('guest'),
         ]);
 
-        $tasks = Task::with(['options'])
+        $tasks = Task::query()
             ->whereNull('task_id')
             ->get();
+
+        if ($request->boolean('shuffle')) {
+            $tasks = $tasks->shuffle();
+        }
 
         foreach ($tasks as $task) {
             $newTask = $task->replicate()->fill([
@@ -39,7 +53,15 @@ class MarathonController extends Controller
 
             $newTask->save();
 
-            foreach ($task->options as $option) {
+            $options = Option::query()
+                ->where('task_id', $task->id)
+                ->get();
+
+            if ($request->boolean('shuffle')) {
+                $options = $options->shuffle();
+            }
+
+            foreach ($options as $option) {
                 $option->replicate()->fill([
                     'is_chosen' => null,
                     'task_id' => $newTask->id,

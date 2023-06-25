@@ -22,16 +22,16 @@
             </a>
         </div>
 
-        <a class="bg-slate-800 rounded px-4 py-2" href="{{ route('tests.index') }}">
+        <a class="bg-slate-800 hover:bg-slate-700 rounded px-4 py-2" href="{{ route('tests.index') }}">
             <img class="block mx-auto" src="{{ Vite::asset('resources/images/Education.svg') }}" alt="Фото процесса обучения" width="240" height="240">
         </a>
 
         <div class="grid grid-cols-2 gap-4">
-            <form action="{{ route('marathons.store') }}" method="POST">
-                @csrf
+{{--            <form action="{{ route('marathons.store') }}" method="POST">--}}
+{{--                @csrf--}}
 
-                <button class="block w-full bg-blue-500 hover:bg-blue-600 rounded px-4 py-2 font-medium text-center" type="submit">Марафон</button>
-            </form>
+                <a class="block w-full bg-blue-500 hover:bg-blue-600 rounded px-4 py-2 font-medium text-center" href="{{ route('marathons.create') }}">Марафон</a>
+{{--            </form>--}}
 
             <form action="{{ route('exams.store') }}" method="POST">
                 @csrf

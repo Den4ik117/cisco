@@ -23,6 +23,7 @@ Route::middleware(EnsureHasGuestToken::class)->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('index');
 
     Route::get('/marathons', [MarathonController::class, 'index'])->name('marathons.index');
+    Route::get('/marathons/create', [MarathonController::class, 'create'])->name('marathons.create');
     Route::post('/marathons', [MarathonController::class, 'store'])->name('marathons.store');
     Route::get('/marathons/{marathon:uuid}', [MarathonController::class, 'show'])->name('marathons.show');
 
