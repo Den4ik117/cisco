@@ -22,9 +22,9 @@
             </a>
         </div>
 
-        <div class="bg-slate-800 rounded px-4 py-2">
+        <a class="bg-slate-800 rounded px-4 py-2" href="{{ route('tests.index') }}">
             <img class="block mx-auto" src="{{ Vite::asset('resources/images/Education.svg') }}" alt="Фото процесса обучения" width="240" height="240">
-        </div>
+        </a>
 
         <div class="grid grid-cols-2 gap-4">
             <form action="{{ route('marathons.store') }}" method="POST">

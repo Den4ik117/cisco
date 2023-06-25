@@ -25,4 +25,14 @@ class Test extends Model
     {
         return $this->hasMany(Exercise::class);
     }
+
+    public function success_exercises(): HasMany
+    {
+        return $this->hasMany(Exercise::class)->where('is_success', true);
+    }
+
+    public function error_exercises(): HasMany
+    {
+        return $this->hasMany(Exercise::class)->where('is_success', false);
+    }
 }

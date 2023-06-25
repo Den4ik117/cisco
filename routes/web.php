@@ -4,6 +4,7 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\MarathonController;
+use App\Http\Controllers\TestController;
 use App\Http\Middleware\EnsureHasGuestToken;
 use Illuminate\Support\Facades\Route;
 
@@ -31,4 +32,6 @@ Route::middleware(EnsureHasGuestToken::class)->group(function () {
     Route::get('/api/tests/{test:uuid}/exercises', [ExerciseController::class, 'index']);
     Route::post('/api/tests/{test:uuid}/exercises/{exercise}', [ExerciseController::class, 'store']);
     Route::patch('/api/tests/{test:uuid}/exercises/{exercise}', [ExerciseController::class, 'update']);
+
+    Route::get('/tests', [TestController::class, 'index'])->name('tests.index');
 });
