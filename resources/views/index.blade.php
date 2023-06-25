@@ -50,14 +50,14 @@
                 </span>
                 <span class="flex flex-col gap-1 text-center">
                     <span class="flex gap-0.5 justify-center">
-                        <span class="text-gray-300">0</span>
+                        <span class="text-gray-300">{{ $stats['mistake_resolved_exercises_count'] }}</span>
                         <span class="text-gray-500">/</span>
-                        <span class="text-gray-500">0</span>
+                        <span class="text-gray-500">{{ $stats['mistake_exercises_count'] }}</span>
                     </span>
                     <span class="h-1 bg-gray-700 group-hover:bg-gray-600 relative w-16">
-                        <span class="absolute block h-1 bg-blue-500" style="width: 0;"></span>
+                        <span class="absolute block h-1 bg-blue-500" style="width: {{ $stats['mistake_exercises_count'] === 0 ? 0 : ($stats['mistake_resolved_exercises_count'] / $stats['mistake_exercises_count'] * 100) }}%;"></span>
                     </span>
-                    <span class="text-gray-300">Модули</span>
+                    <span class="text-gray-300">Ошибки</span>
                 </span>
             </span>
         </a>

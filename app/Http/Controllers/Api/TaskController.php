@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\TestType;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\TaskResource;
+use App\Models\Choice;
+use App\Models\Exercise;
 use App\Models\Marathon;
 use App\Models\Option;
 use App\Models\Task;
-use App\Models\Token;
+use App\Models\Test;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
-    public function index(Marathon $marathon): AnonymousResourceCollection
+    public function index(Marathon $marathon): JsonResponse
     {
         $marathon->load(['tasks', 'tasks.options']);
 
-        return TaskResource::collection($marathon->tasks);
+        return response()->json(['data' => $marathon->tasks]);
     }
 
     public function store(Marathon $marathon, Task $task): Response
@@ -32,7 +34,7 @@ class TaskController extends Controller
         return response()->noContent();
     }
 
-    public function update(Request $request, $marathon, Task $task)
+    public function update(Request $request, $marathon, Task $task): JsonResponse
     {
         $validated = $request->validate([
             'answers' => 'required|array|min:1',
@@ -52,9 +54,33 @@ class TaskController extends Controller
 
         $task->load(['options']);
 
-        $task->is_success = $task->options->every(fn (Option $option) => (!!$option->is_answer) === (!!$option->is_chosen));
-        $task->save();
+        $isSuccess = $task->options->every(fn (Option $option) => (!!$option->is_answer) === (!!$option->is_chosen));
 
-        return new TaskResource($task);
+        $task->update([
+            'is_success' => $isSuccess,
+        ]);
+
+        if (!$isSuccess) {
+            $mistakeTest = Test::query()->firstOrCreate([
+                'token_uuid' => $request->cookie('guest'),
+                'type' => TestType::Mistake->value,
+            ]);
+
+            $mistakeExercise = Exercise::query()->create([
+                'test_id' => $mistakeTest->id,
+                'task_id' => $task->id,
+            ]);
+
+            $options = $task->options->shuffle();
+
+            foreach ($options as $option) {
+                Choice::query()->create([
+                    'exercise_id' => $mistakeExercise->id,
+                    'option_id' => $option->id,
+                ]);
+            }
+        }
+
+        return response()->json(['data' => $task]);
     }
 }

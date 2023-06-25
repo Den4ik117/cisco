@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TaskType;
+use App\Enums\TestType;
 use App\Models\Choice;
 use App\Models\Exercise;
+use App\Models\Option;
+use App\Models\Task;
 use App\Models\Test;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -52,9 +55,35 @@ class ExerciseController extends Controller
 
         $exercise->load(['choices', 'choices.option']);
 
+        $isSuccess = $exercise->isSuccessful();
+
         $exercise->update([
-            'is_success' => $exercise->isSuccessful(),
+            'is_success' => $isSuccess,
         ]);
+
+        if (!$isSuccess) {
+            $mistakeTest = Test::query()->firstOrCreate([
+                'token_uuid' => $request->cookie('guest'),
+                'type' => TestType::Mistake->value,
+            ]);
+
+            $mistakeExercise = Exercise::query()->create([
+                'test_id' => $mistakeTest->id,
+                'task_id' => $exercise->task_id,
+            ]);
+
+            $options = Option::query()
+                ->where('task_id', $exercise->task_id)
+                ->get()
+                ->shuffle();
+
+            foreach ($options as $option) {
+                Choice::query()->create([
+                    'exercise_id' => $mistakeExercise->id,
+                    'option_id' => $option->id,
+                ]);
+            }
+        }
 
         return response()->json(['data' => $exercise]);
     }

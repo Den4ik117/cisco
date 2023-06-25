@@ -29,6 +29,21 @@ class IndexController extends Controller
                     ->first()
                     ?->exercises()
                     ->count() ?? 0,
+            'mistake_resolved_exercises_count' => Test::query()
+                    ->where('token_uuid', $request->cookie('guest'))
+                    ->where('type', TestType::Mistake->value)
+                    ->latest()
+                    ->first()
+                    ?->exercises()
+                    ->whereNotNull('is_success')
+                    ->count() ?? 0,
+            'mistake_exercises_count' => Test::query()
+                    ->where('token_uuid', $request->cookie('guest'))
+                    ->where('type', TestType::Mistake->value)
+                    ->latest()
+                    ->first()
+                    ?->exercises()
+                    ->count() ?? 0,
         ];
 
         return view('index', compact(['stats']));
