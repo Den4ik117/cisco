@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="flex flex-col gap-4">
-        <page-header href="{{ route('index') }}" text="Все тесты"></page-header>
+        <page-header href="{{ config('app.url') }}" text="Все тесты"></page-header>
 
         <ul class="flex flex-col">
             <li class="border-b border-gray-500 text-gray-500 text-xs font-medium">
