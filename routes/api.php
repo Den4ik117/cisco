@@ -20,4 +20,5 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::get('/marathons/{marathon:uuid}/tasks', [TaskController::class, 'index']);
+Route::post('/marathons/{marathon:uuid}/tasks/{task}', [TaskController::class, 'store']);
 Route::patch('/marathons/{marathon:uuid}/tasks/{task}', [TaskController::class, 'update']);

@@ -32,13 +32,21 @@
                 >
                     <input :id="`answer-${option.id}`" class="hidden" type="checkbox" name="answers" :disabled="chosen" :value="option.id" v-model="answers">
                     <span>{{ index + 1 }}.</span>
-<!--                    <span>{{ option }}</span>-->
                     <span>{{ option.name }}</span>
                 </label>
             </li>
         </ol>
 
-        <button v-if="canApply" class="bg-blue-500 hover:bg-blue-600 rounded px-4 py-2 text-xs font-medium" type="button" @click="apply">Подтвердить ответ</button>
+        <button
+            v-if="canApply"
+            class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 disabled:hover:bg-blue-500 disabled:opacity-75 rounded px-4 py-2 text-xs font-medium"
+            type="button"
+            @click="apply"
+            :disabled="loading"
+        >
+            <span>Подтвердить ответ</span>
+            <Loader v-show="loading"/>
+        </button>
 
         <div v-if="chosen">
             <div class="text-sm">Правильный ответ: {{ task.options.filter(option => option.is_answer).map(option => option.name).join(', ') }}</div>
@@ -48,6 +56,7 @@
 
 <script>
 import { defineComponent } from 'vue';
+import Loader from '../../../components/loader';
 
 const Types = {
     One: 'ONE_ANSWER',
@@ -55,13 +64,20 @@ const Types = {
 }
 
 export default defineComponent({
+    components: {
+        Loader,
+    },
     props: {
         task: {
             type: Object,
             required: true
-        }
+        },
+        loading: {
+            type: Boolean,
+            required: true
+        },
     },
-    emits: ['chosen'],
+    emits: ['chosen', 'previous', 'next'],
     computed: {
         oneAnswer() {
             return this.task.type === Types.One;
@@ -78,15 +94,12 @@ export default defineComponent({
     },
     watch: {
         task() {
-            // this.answer = '';
             this.answers = [];
         },
     },
     data() {
         return {
-            // answer: '',
             answers: [],
-            // choiceIsMade: false,
         };
     },
     methods: {
@@ -104,7 +117,51 @@ export default defineComponent({
             if (this.canApply) {
                 this.$emit('chosen', this.answers);
             }
-        }
+        },
+        toggleAnswer(number) {
+            if (!this.task.options && this.task.options.length <= 0) return;
+
+            const answer = this.task.options[number - 1];
+
+            if (!answer) return;
+
+            if (this.oneAnswer) {
+                this.answers = [answer.id];
+
+                return;
+            }
+
+            if (this.multipleAnswers) {
+                if (this.answers.includes(answer.id)) {
+                    this.answers = this.answers.filter(item => item !== answer.id);
+                } else {
+                    this.answers.push(answer.id);
+                }
+            }
+        },
+    },
+    mounted() {
+        document.addEventListener('keydown', (e) => {
+            if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+                this.toggleAnswer(+e.key);
+            }
+
+            if (e.key === 'Enter') {
+                this.apply();
+            }
+
+            if (e.key === 'Escape') {
+                this.answers = [];
+            }
+
+            if (e.key === 'ArrowLeft') {
+                this.$emit('previous');
+            }
+
+            if (e.key === 'ArrowRight') {
+                this.$emit('next');
+            }
+        });
     }
 });
 </script>

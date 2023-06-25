@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <div ref="container" class="max-w-full overflow-x-auto overflow-y-hidden">
+        <div ref="container" class="tabs max-w-full overflow-x-auto overflow-y-hidden">
             <div class="flex gap-2 pb-2">
                 <button
                     v-for="(task, index) in tasks"
@@ -24,7 +24,8 @@
                         // 'bg-slate-700': task.id === currentTask,
                         'bg-green-500 hover:bg-green-600': task.is_success === true,
                         'bg-red-500 hover:bg-red-600': task.is_success === false,
-                        'bg-slate-800 hover:bg-slate-700': task.is_success === null,
+                        'bg-slate-800 hover:bg-slate-700': task.is_success === null && currentTask !== task.id,
+                        'bg-slate-700': task.is_success === null && currentTask === task.id,
                         'active': currentTask === task.id,
                     }"
                     @click="() => currentTask = task.id"
@@ -33,17 +34,14 @@
         </div>
 
         <div v-if="tasks.length > 0 && task">
-            <Task :task="task" @chosen="onChosen"/>
+            <Task
+                :task="task"
+                :loading="loading"
+                @chosen="onChosen"
+                @previous="previous"
+                @next="next"
+            />
         </div>
-
-<!--        <div class="flex justify-between items-center gap-4">-->
-<!--            <button class="bg-blue-500 hover:bg-blue-600 rounded p-1 disabled:opacity-70 disabled:hover:bg-blue-500" type="button" @click="previous" :disabled="!canPrevious">-->
-<!--                <img src="../../../images/SimpleLeftArrow.svg" alt="Предыдущее задание" width="24">-->
-<!--            </button>-->
-<!--            <button class="bg-blue-500 hover:bg-blue-600 rounded p-1 disabled:opacity-70 disabled:hover:bg-blue-500" type="button" @click="next" :disabled="!canNext">-->
-<!--                <img src="../../../images/SimpleRightArrow.svg" alt="Следующее задание" width="24">-->
-<!--            </button>-->
-<!--        </div>-->
     </div>
 </template>
 
@@ -51,6 +49,8 @@
 import { defineComponent } from 'vue';
 import axios from 'axios';
 import Task from './components/Task.vue';
+
+let firstRender = true;
 
 export default defineComponent({
     components: {
@@ -66,6 +66,7 @@ export default defineComponent({
         return {
             currentTask: null,
             tasks: [],
+            loading: false,
         };
     },
     computed: {
@@ -84,36 +85,37 @@ export default defineComponent({
     },
     watch: {
         currentTask() {
-            if (this.currentIndex < 4) return;
-
-            this.$refs.container.scrollLeft = 40 * (this.currentIndex - 4);
-        }
+            this.changedTask();
+        },
     },
     methods: {
         fetchTasks() {
             axios.get(`/api/marathons/${this.marathon.uuid}/tasks`)
                 .then(response => response.data.data)
                 .then(tasks => {
-                    this.currentTask = tasks[0].id;
                     this.tasks = tasks;
+                    this.currentTask = this.marathon.last_task_id || tasks[0].id;
                 });
         },
         onChosen(answers) {
-            // const index = this.tasks.findIndex(task => task.id === this.currentTask)
+            if (this.loading) return;
 
-            // this.currentTask = this.tasks[index + 1].id;
+            this.loading = true;
 
             axios.patch(`/api/marathons/${this.marathon.uuid}/tasks/${this.currentTask}`, { answers })
                 .then(response => response.data.data)
                 .then(task => {
-                    const index = this.tasks.findIndex(task => task.id === this.currentTask);
+                    const index = this.tasks.findIndex(item => item.id === task.id);
 
                     this.tasks[index] = task;
 
-                    if (task.is_success) {
+                    if (task.is_success && this.currentTask === task.id) {
                         this.currentTask = this.tasks[index + 1].id;
                         // this.$refs.container.scrollLeft += 48;
                     }
+                })
+                .finally(() => {
+                    this.loading = false;
                 });
         },
         previous() {
@@ -126,6 +128,21 @@ export default defineComponent({
 
             this.currentTask = this.tasks[this.currentIndex + 1].id;
         },
+        changedTask() {
+            if (this.currentIndex >= 4) {
+                if (firstRender) {
+                    setTimeout(() => {
+                        this.$refs.container.scrollLeft = 40 * (this.currentIndex - 4);
+                    }, 100);
+                } else this.$refs.container.scrollLeft = 40 * (this.currentIndex - 4);
+            }
+
+            if (this.currentTask && !firstRender) {
+                axios.post(`/api/marathons/${this.marathon.uuid}/tasks/${this.currentTask}`);
+            }
+
+            firstRender = false;
+        },
     },
     mounted() {
         this.fetchTasks();
@@ -133,12 +150,12 @@ export default defineComponent({
         let ts;
 
         document.addEventListener('touchstart', (e) => {
-            ts = e.touches[0].clientX;
-            // console.log(e.touches);
-            // console.log(e.touches[0].clientX);
+            ts = e.target.closest('.tabs') ? null : e.touches[0].clientX;
         });
 
         document.addEventListener('touchend', (e) => {
+            if (!ts) return;
+
             const te = e.changedTouches[0].clientX;
             const diff = te - ts;
 

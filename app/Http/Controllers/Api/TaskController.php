@@ -10,14 +10,26 @@ use App\Models\Task;
 use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
-    public function index(Request $request, Marathon $marathon): AnonymousResourceCollection
+    public function index(Marathon $marathon): AnonymousResourceCollection
     {
         $marathon->load(['tasks', 'tasks.options']);
 
         return TaskResource::collection($marathon->tasks);
+    }
+
+    public function store(Marathon $marathon, Task $task): Response
+    {
+        if ($task->marathon_id === $marathon->id) {
+            $marathon->update([
+                'last_task_id' => $task->id,
+            ]);
+        }
+
+        return response()->noContent();
     }
 
     public function update(Request $request, $marathon, Task $task)

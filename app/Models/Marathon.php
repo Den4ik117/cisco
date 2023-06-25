@@ -12,6 +12,7 @@ class Marathon extends Model
 
     protected $fillable = [
         'token_uuid',
+        'last_task_id',
     ];
 
     public function tasks(): HasMany
