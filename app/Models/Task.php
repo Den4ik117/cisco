@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\TaskType;
 use App\Traits\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Task extends Model
@@ -31,5 +32,10 @@ class Task extends Model
     public function options(): HasMany
     {
         return $this->hasMany(Option::class);
+    }
+
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(Task::class);
     }
 }

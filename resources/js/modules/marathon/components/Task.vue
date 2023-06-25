@@ -1,13 +1,13 @@
 <template>
     <div class="flex flex-col gap-4">
-        <div v-if="!task.image_content" class="flex gap-2 items-center">
+        <div v-if="!task.task.image_content" class="flex gap-2 items-center">
             <span class="text-xs text-gray-500 whitespace-nowrap">Вопрос без изображения</span>
             <span class="h-px w-full bg-gray-500"></span>
         </div>
 
-        <img v-else class="max-w-full" :src="task.image_content" :alt="`Фотография к задаче с номером ${task.id}`">
+        <img v-else class="max-w-full" :src="task.task.image_content" :alt="`Фотография к задаче с номером ${task.id}`">
 
-        <h2 class="text-sm font-medium">{{ task.name }}</h2>
+        <h2 class="text-sm font-medium">{{ task.task.name }}</h2>
 
         <ol v-if="oneAnswer" class="flex flex-col gap-2">
             <li v-for="(option, index) in task.options" class="">
@@ -37,6 +37,11 @@
             </li>
         </ol>
 
+        <div v-if="input" class="flex flex-col gap-2">
+            <input v-if="!chosen" class="text-xs px-3 shadow py-2 outline-none rounded text-gray-800" type="text" autocomplete="off" spellcheck="false" autofocus v-model="answers[0]">
+            <input v-else class="text-xs px-3 shadow py-2 outline-none rounded text-gray-800" type="text" autocomplete="off" spellcheck="false" disabled :value="task.options.filter(option => option.is_answer).map(option => option.name).join(', ')">
+        </div>
+
         <button
             v-if="canApply"
             class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 disabled:hover:bg-blue-500 disabled:opacity-75 rounded px-4 py-2 text-xs font-medium"
@@ -65,6 +70,7 @@ import Loader from '../../../components/loader';
 const Types = {
     One: 'ONE_ANSWER',
     Multiple: 'MULTIPLE_ANSWERS',
+    Input: 'INPUT',
 }
 
 export default defineComponent({
@@ -84,10 +90,13 @@ export default defineComponent({
     emits: ['chosen', 'previous', 'next'],
     computed: {
         oneAnswer() {
-            return this.task.type === Types.One;
+            return this.task.task.type === Types.One;
         },
         multipleAnswers() {
-            return this.task.type === Types.Multiple;
+            return this.task.task.type === Types.Multiple;
+        },
+        input() {
+            return this.task.task.type === Types.Input;
         },
         chosen() {
             return this.task.is_success !== null;
@@ -152,6 +161,8 @@ export default defineComponent({
     mounted() {
         document.addEventListener('keydown', (e) => {
             if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+                if (this.input) return;
+
                 this.toggleAnswer(+e.key);
             }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\TaskType;
 use App\Enums\TestType;
 use App\Http\Controllers\Controller;
 use App\Models\Choice;
@@ -18,7 +19,7 @@ class TaskController extends Controller
 {
     public function index(Marathon $marathon): JsonResponse
     {
-        $marathon->load(['tasks', 'tasks.options']);
+        $marathon->load(['tasks', 'tasks.options', 'tasks.task']);
 
         return response()->json(['data' => $marathon->tasks]);
     }
@@ -36,18 +37,32 @@ class TaskController extends Controller
 
     public function update(Request $request, $marathon, Task $task): JsonResponse
     {
-        $validated = $request->validate([
-            'answers' => 'required|array|min:1',
-            'answers.*' => 'required|integer|min:1',
-        ]);
+        if (in_array($task->task->type, [TaskType::OneAnswer, TaskType::MultipleAnswers])) {
+            $validated = $request->validate([
+                'answers' => 'required|array|min:1',
+                'answers.*' => 'required|integer|min:1',
+            ]);
 
-        foreach ($validated['answers'] as $answerID) {
-            $option = Option::query()
+            $options = Option::query()
                 ->where('task_id', $task->id)
-                ->where('id', $answerID)
-                ->firstOrFail();
+                ->whereIn('id', $validated['answers'])
+                ->get();
 
-            $option->update([
+            $options->toQuery()->update([
+                'is_chosen' => true,
+            ]);
+        } else {
+            $validated = $request->validate([
+                'answers' => 'required|array|size:1',
+                'answers.*' => 'required|string|max:255',
+            ]);
+
+            $options = Option::query()
+                ->where('task_id', $task->id)
+                ->where('name', $validated['answers'][0])
+                ->get();
+
+            $options->toQuery()->update([
                 'is_chosen' => true,
             ]);
         }
