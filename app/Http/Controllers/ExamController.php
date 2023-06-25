@@ -23,7 +23,7 @@ class ExamController extends Controller
             ->whereNull('task_id')
             ->get(['id'])
             ->shuffle()
-            ->take(20);
+            ->take(25);
 
         foreach ($tasks as $task) {
             $exercise = Exercise::query()->create([
