@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ExamController;
+use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\MarathonController;
 use App\Http\Middleware\EnsureHasGuestToken;
@@ -22,4 +24,11 @@ Route::middleware(EnsureHasGuestToken::class)->group(function () {
     Route::get('/marathons', [MarathonController::class, 'index'])->name('marathons.index');
     Route::post('/marathons', [MarathonController::class, 'store'])->name('marathons.store');
     Route::get('/marathons/{marathon:uuid}', [MarathonController::class, 'show'])->name('marathons.show');
+
+    Route::post('/exams', [ExamController::class, 'store'])->name('exams.store');
+    Route::get('/exams/{test:uuid}', [ExamController::class, 'show'])->name('exams.show');
+
+    Route::get('/api/tests/{test:uuid}/exercises', [ExerciseController::class, 'index']);
+    Route::post('/api/tests/{test:uuid}/exercises/{exercise}', [ExerciseController::class, 'store']);
+    Route::patch('/api/tests/{test:uuid}/exercises/{exercise}', [ExerciseController::class, 'update']);
 });

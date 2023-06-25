@@ -47,7 +47,7 @@ export default defineComponent({
         PageHeader,
     },
     props: {
-        marathon: {
+        test: {
             type: Object,
             required: true
         }
@@ -80,11 +80,11 @@ export default defineComponent({
     },
     methods: {
         fetchTasks() {
-            axios.get(`/api/marathons/${this.marathon.uuid}/tasks`)
+            axios.get(`/api/tests/${this.test.uuid}/exercises`)
                 .then(response => response.data.data)
-                .then(tasks => {
-                    this.tasks = tasks;
-                    this.currentTask = this.marathon.last_task_id || tasks[0].id;
+                .then(exercises => {
+                    this.tasks = exercises;
+                    this.currentTask = this.test.last_exercise_id || exercises[0].id;
                 });
         },
         onChosen(answers) {
@@ -92,7 +92,7 @@ export default defineComponent({
 
             this.loading = true;
 
-            axios.patch(`/api/marathons/${this.marathon.uuid}/tasks/${this.currentTask}`, { answers })
+            axios.patch(`/api/tests/${this.test.uuid}/exercises/${this.currentTask}`, { answers })
                 .then(response => response.data.data)
                 .then(task => {
                     const index = this.tasks.findIndex(item => item.id === task.id);
@@ -128,7 +128,7 @@ export default defineComponent({
             }
 
             if (this.currentTask && !firstRender) {
-                axios.post(`/api/marathons/${this.marathon.uuid}/tasks/${this.currentTask}`);
+                axios.post(`/api/tests/${this.test.uuid}/exercises/${this.currentTask}`);
             }
 
             firstRender = false;

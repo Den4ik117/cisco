@@ -4,7 +4,19 @@
 
 @section('content')
     <div class="flex flex-col gap-4">
-        <page-header href="{{ route('index') }}" text="Мои марафоны"></page-header>
+        <div class="flex items-center gap-4 py-1">
+            <a class="bg-slate-800 hover:bg-slate-700 rounded p-1" href="{{ route('index') }}">
+                <img class="" src="{{ Vite::asset('resources/images/ArrowLeft.svg') }}" alt="Вернуться назад" width="24">
+            </a>
+
+            <div class="flex flex-col text-xs">
+                <span class="font-bold">Мои марафоны</span>
+                <div class="flex items-center gap-1">
+                    <img src="{{ Vite::asset('resources/images/DenisZagvozdinLogo.svg') }}" alt="Логотип Дениса Загвоздина" width="12">
+                    <small class="font-bold">Denis Zagvozdin</small>
+                </div>
+            </div>
+        </div>
 
         <ul class="flex flex-col">
             <li class="border-b border-gray-500 text-gray-500 text-xs font-medium">
