@@ -68,7 +68,7 @@ class TaskController extends Controller
 
             $mistakeExercise = Exercise::query()->create([
                 'test_id' => $mistakeTest->id,
-                'task_id' => $task->id,
+                'task_id' => $task->task_id,
             ]);
 
             $options = $task->options->shuffle();
