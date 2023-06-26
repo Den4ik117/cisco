@@ -127,9 +127,9 @@ export default defineComponent({
                 } else this.$refs.container.scrollLeft = 40 * (this.currentIndex - 4);
             }
 
-            if (this.currentTask && !firstRender) {
-                axios.post(`/api/marathons/${this.marathon.uuid}/tasks/${this.currentTask}`);
-            }
+            // if (this.currentTask && !firstRender) {
+            //     axios.post(`/api/marathons/${this.marathon.uuid}/tasks/${this.currentTask}`);
+            // }
 
             firstRender = false;
         },

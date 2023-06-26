@@ -37,6 +37,11 @@
             </li>
         </ol>
 
+        <div v-if="input" class="flex flex-col gap-2">
+            <input v-if="!chosen" class="text-xs px-3 shadow py-2 outline-none rounded text-gray-800" type="text" autocomplete="off" spellcheck="false" autofocus v-model="answers[0]">
+            <input v-else class="text-xs px-3 shadow py-2 outline-none rounded text-gray-800" type="text" autocomplete="off" spellcheck="false" disabled :value="task.choices.filter(choice => choice.option.is_answer).map(choice => choice.option.name).join(', ')">
+        </div>
+
         <button
             v-if="canApply"
             class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 disabled:hover:bg-blue-500 disabled:opacity-75 rounded px-4 py-2 text-xs font-medium"
@@ -65,6 +70,7 @@ import Loader from '../../../components/loader';
 const Types = {
     One: 'ONE_ANSWER',
     Multiple: 'MULTIPLE_ANSWERS',
+    Input: 'INPUT',
 }
 
 export default defineComponent({
@@ -88,6 +94,9 @@ export default defineComponent({
         },
         multipleAnswers() {
             return this.task.task.type === Types.Multiple;
+        },
+        input() {
+            return this.task.task.type === Types.Input;
         },
         chosen() {
             return this.task.is_success !== null;

@@ -35,14 +35,14 @@ class ExerciseController extends Controller
 
     public function update(Request $request, Test $test, Exercise $exercise): JsonResponse
     {
-        $validated = $request->validate([
-            'answers' => 'required|array|min:1',
-            'answers.*' => 'required|integer|min:1',
-        ]);
-
         $exercise->load(['task']);
 
-        if (in_array($exercise->task->type, [TaskType::MultipleAnswers, TaskType::OneAnswer])) {
+        if (in_array($exercise->task->type, [TaskType::OneAnswer, TaskType::MultipleAnswers])) {
+            $validated = $request->validate([
+                'answers' => 'required|array|min:1',
+                'answers.*' => 'required|integer|min:1',
+            ]);
+
             $choices = Choice::query()
                 ->where('exercise_id', $exercise->id)
                 ->whereIn('id', $validated['answers'])
@@ -51,11 +51,31 @@ class ExerciseController extends Controller
             $choices->toQuery()->update([
                 'is_chosen' => true,
             ]);
+
+            $isSuccess = $exercise->isSuccessful();
+        } else {
+            $validated = $request->validate([
+                'answers' => 'required|array|size:1',
+                'answers.*' => 'required|string|max:255',
+            ]);
+
+            $choices = Choice::query()
+                ->where('exercise_id', $exercise->id)
+                ->whereHas('option', function ($query) use ($validated) {
+                    $query->where('name', $validated['answers'][0]);
+                })
+                ->get();
+
+            if ($choices->isNotEmpty()) {
+                $choices->toQuery()->update([
+                    'is_chosen' => true,
+                ]);
+            }
+
+            $isSuccess = $choices->isNotEmpty();
         }
 
         $exercise->load(['choices', 'choices.option']);
-
-        $isSuccess = $exercise->isSuccessful();
 
         $exercise->update([
             'is_success' => $isSuccess,
@@ -83,6 +103,12 @@ class ExerciseController extends Controller
                     'option_id' => $option->id,
                 ]);
             }
+        }
+
+        if ($exercise->test_id === $test->id) {
+            $test->update([
+                'last_exercise_id' => $exercise->id,
+            ]);
         }
 
         return response()->json(['data' => $exercise]);

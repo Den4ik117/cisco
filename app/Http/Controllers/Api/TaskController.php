@@ -35,7 +35,7 @@ class TaskController extends Controller
         return response()->noContent();
     }
 
-    public function update(Request $request, $marathon, Task $task): JsonResponse
+    public function update(Request $request, Marathon $marathon, Task $task): JsonResponse
     {
         if (in_array($task->task->type, [TaskType::OneAnswer, TaskType::MultipleAnswers])) {
             $validated = $request->validate([
@@ -100,6 +100,12 @@ class TaskController extends Controller
                     'option_id' => $option->id,
                 ]);
             }
+        }
+
+        if ($task->marathon_id === $marathon->id) {
+            $marathon->update([
+                'last_task_id' => $task->id,
+            ]);
         }
 
         return response()->json(['data' => $task]);
