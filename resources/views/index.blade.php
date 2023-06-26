@@ -75,6 +75,8 @@
                 <button class="block w-full bg-red-500 hover:bg-red-600 rounded px-4 py-2 font-medium text-center" type="submit">Экзамен</button>
             </form>
 
+            <a class="col-span-full bg-green-500 hover:bg-green-600 rounded px-4 py-2 font-medium text-sm text-center" href="{{ route('base.index') }}">База</a>
+
             <a class="col-span-full bg-gray-500 hover:bg-gray-600 rounded px-4 py-2 font-medium text-sm text-center" href="{{ route('marathons.index') }}">Мои марафоны</a>
 
             <a class="col-span-full bg-gray-500 hover:bg-gray-600 rounded px-4 py-2 font-medium text-sm text-center" href="https://github.com/Den4ik117/cisco" target="_blank">Исходный код</a>

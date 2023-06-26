@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\IndexController;
@@ -35,4 +36,6 @@ Route::middleware(EnsureHasGuestToken::class)->group(function () {
     Route::patch('/api/tests/{test:uuid}/exercises/{exercise}', [ExerciseController::class, 'update']);
 
     Route::get('/tests', [TestController::class, 'index'])->name('tests.index');
+
+    Route::get('/base', [BaseController::class, 'index'])->name('base.index');
 });
