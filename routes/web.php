@@ -43,8 +43,8 @@ Route::middleware(EnsureCourseIsChosen::class)->group(function () {
     Route::post('/api/tests/{test:uuid}/exercises/{exercise}', [ExerciseController::class, 'store']);
     Route::patch('/api/tests/{test:uuid}/exercises/{exercise}', [ExerciseController::class, 'update']);
 
-    Route::get('/tests', [TestController::class, 'index'])->name('tests.index');
-    Route::post('/tests', [TestController::class, 'store'])->name('tests.store');
+    Route::get('/testings', [TestController::class, 'index'])->name('tests.index');
+    Route::post('/testings', [TestController::class, 'store'])->name('tests.store');
 
     Route::get('/base', [BaseController::class, 'index'])->name('base.index');
 });
