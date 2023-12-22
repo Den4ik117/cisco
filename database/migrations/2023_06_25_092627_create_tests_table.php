@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid()->index();
             $table->string('token_uuid', 36)->nullable();
-            $table->foreign('token_uuid')->references('uuid')->on('tokens')->restrictOnDelete();
+            $table->foreign('token_uuid')->references('uuid')->on('tokens')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained('courses')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('type');
             $table->timestamps();
