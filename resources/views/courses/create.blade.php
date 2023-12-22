@@ -2,6 +2,17 @@
 
 @section('title', 'Выберите курс')
 
+@section('head')
+    <meta name="description" content="Это сайт ― база баз, которая позволяет выучить билеты, которые будут на экзамене по тому или иному предмету">
+    <meta property="og:title" content="База баз">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ config('app.url') }}">
+    <meta property="og:image" content="{{ Vite::asset('resources/images/Promo.jpg') }}">
+    <meta property="og:description" content="Это сайт ― база баз, которая позволяет выучить билеты, которые будут на экзамене по тому или иному предмету">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:site_name" content="База баз">
+@endsection
+
 @section('content')
     <div class="flex flex-col gap-4">
         <div class="flex justify-center">

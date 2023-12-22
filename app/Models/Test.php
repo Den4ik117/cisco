@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TestType;
 use App\Traits\HasUuids;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -35,5 +36,15 @@ class Test extends Model
     public function error_exercises(): HasMany
     {
         return $this->exercises()->where('is_success', false);
+    }
+
+    protected function testUrl(): Attribute
+    {
+        return new Attribute(
+            get: fn() => match ($this->type) {
+                TestType::Marathon => route('marathons.show', $this->uuid),
+                default => route('exams.show', $this->uuid),
+            },
+        );
     }
 }

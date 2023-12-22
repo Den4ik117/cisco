@@ -3,14 +3,14 @@
 @section('title', 'База баз')
 
 @section('head')
-    <meta name="description" content="Это сайт, позволяющий выучить билеты, которые будут на экзамене по CISCO">
-    <meta property="og:title" content="Билеты по CISCO">
+    <meta name="description" content="Это сайт ― база баз, которая позволяет выучить билеты, которые будут на экзамене по тому или иному предмету">
+    <meta property="og:title" content="База баз">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ config('app.url') }}">
     <meta property="og:image" content="{{ Vite::asset('resources/images/Promo.jpg') }}">
-    <meta property="og:description" content="Это сайт, позволяющий выучить билеты, которые будут на экзамене по CISCO">
+    <meta property="og:description" content="Это сайт ― база баз, которая позволяет выучить билеты, которые будут на экзамене по тому или иному предмету">
     <meta property="og:locale" content="ru_RU">
-    <meta property="og:site_name" content="Билеты по CISCO">
+    <meta property="og:site_name" content="База баз">
 @endsection
 
 @section('content')

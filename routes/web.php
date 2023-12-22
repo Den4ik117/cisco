@@ -30,13 +30,13 @@ Route::middleware(EnsureHasGuestToken::class)->group(function () {
 Route::middleware(EnsureCourseIsChosen::class)->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('index');
 
-    Route::get('/marathons', [MarathonController::class, 'index'])->name('marathons.index');
+//    Route::get('/marathons', [MarathonController::class, 'index'])->name('marathons.index');
     Route::get('/marathons/create', [MarathonController::class, 'create'])->name('marathons.create');
-    Route::post('/marathons', [MarathonController::class, 'store'])->name('marathons.store');
+//    Route::post('/marathons', [MarathonController::class, 'store'])->name('marathons.store');
 //    Route::get('/marathons/{marathon:uuid}', [MarathonController::class, 'show'])->name('marathons.show');
     Route::get('/marathons/{test:uuid}', [MarathonController::class, 'show'])->name('marathons.show');
 
-    Route::post('/exams', [ExamController::class, 'store'])->name('exams.store');
+//    Route::post('/exams', [ExamController::class, 'store'])->name('exams.store');
     Route::get('/exams/{test:uuid}', [ExamController::class, 'show'])->name('exams.show');
 
     Route::get('/api/tests/{test:uuid}/exercises', [ExerciseController::class, 'index']);

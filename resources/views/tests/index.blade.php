@@ -33,7 +33,7 @@
 
             @foreach($tests as $test)
                 <li class="text-gray-200 text-xs">
-                    <a class="grid grid-cols-[1fr_40px_48px] p-2 gap-y-2 hover:bg-slate-800" href="{{ route('exams.show', $test->uuid) }}">
+                    <a class="grid grid-cols-[1fr_40px_48px] p-2 gap-y-2 hover:bg-slate-800" href="{{ $test->test_url }}">
                         <span>{{ $test->type->label() }} {{ $test->created_at->format('d.m.Y') }}</span>
                         <span class="flex gap-0.5 justify-end">
                             <span class="text-green-500">{{ $test->success_exercises_count }}</span>
