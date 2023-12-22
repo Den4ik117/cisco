@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid()->index();
             $table->string('ip')->nullable();
+            $table->foreignId('course_id')->nullable()->constrained('courses')->cascadeOnUpdate()->nullOnDelete();
             $table->timestamps();
         });
     }

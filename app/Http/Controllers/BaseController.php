@@ -10,11 +10,9 @@ class BaseController extends Controller
 {
     public function index()
     {
-        $tasks = Task::with(['options' => function (HasMany $query) {
-            $query->where('is_answer', true);
-        }])
+        $tasks = Task::with(['options' => fn($query) => $query->where('is_answer', true)])
             ->select(['id', 'name'])
-            ->whereNull('task_id')
+//            ->whereNull('task_id')
             ->get();
 
         return view('base.index', compact(['tasks']));

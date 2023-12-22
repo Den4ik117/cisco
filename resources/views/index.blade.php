@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Билеты по CISCO')
+@section('title', 'База баз')
 
 @section('head')
     <meta name="description" content="Это сайт, позволяющий выучить билеты, которые будут на экзамене по CISCO">
@@ -69,18 +69,28 @@
                 <a class="block w-full bg-blue-500 hover:bg-blue-600 rounded px-4 py-2 font-medium text-center" href="{{ route('marathons.create') }}">Марафон</a>
 {{--            </form>--}}
 
-            <form action="{{ route('exams.store') }}" method="POST">
+            <form action="{{ route('tests.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="type" value="{{ \App\Enums\TestType::Exam->value }}">
 
                 <button class="block w-full bg-red-500 hover:bg-red-600 rounded px-4 py-2 font-medium text-center" type="submit">Экзамен</button>
             </form>
 
             <a class="col-span-full bg-green-500 hover:bg-green-600 rounded px-4 py-2 font-medium text-sm text-center" href="{{ route('base.index') }}">База</a>
 
-            <a class="col-span-full bg-gray-500 hover:bg-gray-600 rounded px-4 py-2 font-medium text-sm text-center" href="{{ route('marathons.index') }}">Мои марафоны</a>
+{{--            <a class="col-span-full bg-gray-500 hover:bg-gray-600 rounded px-4 py-2 font-medium text-sm text-center" href="{{ route('marathons.index') }}">Мои марафоны</a>--}}
 
             <a class="col-span-full bg-gray-500 hover:bg-gray-600 rounded px-4 py-2 font-medium text-sm text-center" href="https://github.com/Den4ik117/cisco" target="_blank">Исходный код</a>
+
+            <a
+                class="col-span-full bg-blue-500 hover:bg-blue-600 rounded px-4 py-2 font-medium text-sm text-center"
+                href="{{ route('courses.choose') }}"
+            >Выбрать другой курс</a>
             {{--        <a class="bg-red-500 hover:bg-red-600 rounded px-4 py-2 font-medium text-center" href="{{ route('marathons.index') }}">Экзамен</a>--}}
         </div>
+
+        <p class="text-gray-400 text-xs text-center">
+            Курс <span class="font-medium">«{{ $token->course?->name ?? 'Курс не выбран' }}»</span>
+        </p>
     </div>
 @endsection

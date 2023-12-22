@@ -4,8 +4,6 @@
 
 @section('content')
     <div class="flex flex-col gap-4">
-        <test
-            :test='@json($test)'
-        ></test>
+        <test :test='@json($test)'></test>
     </div>
 @endsection

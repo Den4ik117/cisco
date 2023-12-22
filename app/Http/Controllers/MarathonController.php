@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Marathon;
 use App\Models\Option;
 use App\Models\Task;
+use App\Models\Test;
 use App\Models\Token;
 use Illuminate\Http\Request;
 
@@ -24,11 +25,16 @@ class MarathonController extends Controller
 
     public function create(Request $request)
     {
+        $token = Token::query()
+            ->with(['course'])
+            ->firstWhere('uuid', $request->cookie('guest'));
+
         $tasks_count = Task::query()
-            ->whereNull('task_id')
+            ->where('course_id', $token->course_id)
+//            ->whereNull('task_id')
             ->count();
 
-        return view('marathons.create', compact(['tasks_count']));
+        return view('marathons.create', compact(['tasks_count', 'token']));
     }
 
     public function store(Request $request)
@@ -72,8 +78,13 @@ class MarathonController extends Controller
         return to_route('marathons.show', $marathon->uuid);
     }
 
-    public function show(Marathon $marathon)
+//    public function show(Marathon $marathon)
+//    {
+//        return view('marathons.show', compact(['marathon']));
+//    }
+
+    public function show(Test $test)
     {
-        return view('marathons.show', compact(['marathon']));
+        return view('marathons.show', compact(['test']));
     }
 }

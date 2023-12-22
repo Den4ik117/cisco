@@ -14,22 +14,22 @@
                     <small class="text-right">Всего</small>
                 </div>
             </li>
-            @foreach($marathons as $marathon)
-                <li class="text-gray-200 text-xs">
-                    <a class="grid grid-cols-[1fr_40px_48px] p-2 gap-y-2 hover:bg-slate-800" href="{{ route('marathons.show', $marathon->uuid) }}">
-                        <span>Марафон {{ $marathon->created_at->format('d.m.Y') }}</span>
-                        <span class="flex gap-0.5 justify-end">
-                            <span class="text-green-500">{{ $marathon->success_tasks_count }}</span>
-                            <span>/</span>
-                            <span class="text-red-500">{{ $marathon->error_tasks_count }}</span>
-                        </span>
-                        <span class="text-right text-gray-500">{{ $marathon->tasks_count }}</span>
-                        <span class="h-1 col-span-full bg-gray-700 relative">
-                            <span class="absolute block h-1 bg-blue-500" style="width: {{ (($marathon->success_tasks_count + $marathon->error_tasks_count) / $marathon->tasks_count) * 100 }}%"></span>
-                        </span>
-                    </a>
-                </li>
-            @endforeach
+{{--            @foreach($marathons as $marathon)--}}
+{{--                <li class="text-gray-200 text-xs">--}}
+{{--                    <a class="grid grid-cols-[1fr_40px_48px] p-2 gap-y-2 hover:bg-slate-800" href="{{ route('marathons.show', $marathon->uuid) }}">--}}
+{{--                        <span>Марафон {{ $marathon->created_at->format('d.m.Y') }}</span>--}}
+{{--                        <span class="flex gap-0.5 justify-end">--}}
+{{--                            <span class="text-green-500">{{ $marathon->success_tasks_count }}</span>--}}
+{{--                            <span>/</span>--}}
+{{--                            <span class="text-red-500">{{ $marathon->error_tasks_count }}</span>--}}
+{{--                        </span>--}}
+{{--                        <span class="text-right text-gray-500">{{ $marathon->tasks_count }}</span>--}}
+{{--                        <span class="h-1 col-span-full bg-gray-700 relative">--}}
+{{--                            <span class="absolute block h-1 bg-blue-500" style="width: {{ (($marathon->success_tasks_count + $marathon->error_tasks_count) / $marathon->tasks_count) * 100 }}%"></span>--}}
+{{--                        </span>--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+{{--            @endforeach--}}
 
             @foreach($tests as $test)
                 <li class="text-gray-200 text-xs">

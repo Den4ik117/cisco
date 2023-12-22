@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            $table->uuid()->index();
+            $table->uuid();
             $table->string('name');
+            $table->foreignId('course_id')->constrained('courses')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

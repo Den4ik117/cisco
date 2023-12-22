@@ -11,6 +11,7 @@ use App\Models\Marathon;
 use App\Models\Option;
 use App\Models\Task;
 use App\Models\Test;
+use App\Models\Token;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -37,6 +38,8 @@ class TaskController extends Controller
 
     public function update(Request $request, Marathon $marathon, Task $task): JsonResponse
     {
+        $token = Token::query()->firstWhere('uuid', $request->cookie('guest'));
+
         if (in_array($task->task->type, [TaskType::OneAnswer, TaskType::MultipleAnswers])) {
             $validated = $request->validate([
                 'answers' => 'required|array|min:1',
@@ -83,7 +86,8 @@ class TaskController extends Controller
 
         if (!$isSuccess) {
             $mistakeTest = Test::query()->firstOrCreate([
-                'token_uuid' => $request->cookie('guest'),
+                'token_uuid' => $token->uuid,
+                'course_id' => $token->course_id,
                 'type' => TestType::Mistake->value,
             ]);
 

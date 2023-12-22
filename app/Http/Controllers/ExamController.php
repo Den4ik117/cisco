@@ -20,7 +20,7 @@ class ExamController extends Controller
         ]);
 
         $tasks = Task::query()
-            ->whereNull('task_id')
+//            ->whereNull('task_id')
             ->get(['id'])
             ->shuffle()
             ->take(25);

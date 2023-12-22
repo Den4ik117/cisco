@@ -14,6 +14,7 @@ class Test extends Model
     protected $fillable = [
         'token_uuid',
         'last_exercise_id',
+        'course_id',
         'type',
     ];
 
@@ -28,11 +29,11 @@ class Test extends Model
 
     public function success_exercises(): HasMany
     {
-        return $this->hasMany(Exercise::class)->where('is_success', true);
+        return $this->exercises()->where('is_success', true);
     }
 
     public function error_exercises(): HasMany
     {
-        return $this->hasMany(Exercise::class)->where('is_success', false);
+        return $this->exercises()->where('is_success', false);
     }
 }

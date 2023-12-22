@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('is_answer');
-            $table->boolean('is_chosen')->nullable();
-            $table->foreignId('task_id')->constrained('tasks')->cascadeOnDelete();
+            $table->foreignId('task_id')->constrained('tasks')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

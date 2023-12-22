@@ -9,6 +9,7 @@ use App\Models\Exercise;
 use App\Models\Option;
 use App\Models\Task;
 use App\Models\Test;
+use App\Models\Token;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -36,6 +37,8 @@ class ExerciseController extends Controller
     public function update(Request $request, Test $test, Exercise $exercise): JsonResponse
     {
         $exercise->load(['task']);
+
+        $token = Token::query()->firstWhere('uuid', $request->cookie('guest'));
 
         if (in_array($exercise->task->type, [TaskType::OneAnswer, TaskType::MultipleAnswers])) {
             $validated = $request->validate([
@@ -83,7 +86,8 @@ class ExerciseController extends Controller
 
         if (!$isSuccess) {
             $mistakeTest = Test::query()->firstOrCreate([
-                'token_uuid' => $request->cookie('guest'),
+                'token_uuid' => $token->uuid,
+                'course_id' => $token->course_id,
                 'type' => TestType::Mistake->value,
             ]);
 

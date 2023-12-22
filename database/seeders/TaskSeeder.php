@@ -3,13 +3,10 @@
 namespace Database\Seeders;
 
 use App\Enums\TaskType;
+use App\Models\Option;
 use App\Models\Task;
-use Exception;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use mysql_xdevapi\Collection;
 
 class TaskSeeder extends Seeder
 {
@@ -18,33 +15,37 @@ class TaskSeeder extends Seeder
      */
     public function run(): void
     {
-        $content = file_get_contents(public_path('data.json'));
-        $json = json_decode($content, true);
+        $content = file_get_contents(public_path('course-one.json'));
+        $tasks = json_decode($content, true);
+        $courseId = 1;
 
-        foreach (Arr::get($json, 'content', []) as $task) {
-            preg_match('/TEMP="(.+\.(png|jpg|jpeg))"/', $task[1], $matches);
-            $filename = null;
-
-            if (isset($matches[1])) {
-                $path = "https://mintbrain.github.io/ciscoTest/pics/$matches[1]";
-                $uuid = Str::orderedUuid()->toString();
-                $filename = "/images/$uuid.$matches[2]";
-                Storage::put($filename, file_get_contents($path));
-            }
-
-            $newTask = Task::query()->create([
-                'name' => preg_replace('/TEMP="(.+\.(png|jpg|jpeg))"/', '', $task[1]),
-                'image_content' => $filename,
-                'type' => count($task[3]) <= 1 ? TaskType::OneAnswer : TaskType::MultipleAnswers,
+        foreach ($tasks as $task) {
+            $taskModel = Task::query()->updateOrCreate([
+                'name' => $task['Name'],
+                'course_id' => $courseId,
+            ], [
+                'type' => $this->getTaskType($task['Answers']),
             ]);
 
-            for ($i = 0; $i < count($task[2]); $i++) {
-                $newTask->options()->create([
-                    'name' => $task[2][$i],
-                    'is_answer' => in_array($i, $task[3]),
-                    'is_chosen' => null,
+            foreach ($task['Answers'] as $option) {
+                Option::query()->updateOrCreate([
+                    'name' => $option['Name'],
+                    'task_id' => $taskModel->id,
+                ], [
+                    'is_answer' => $option['IsAnswer'],
                 ]);
             }
         }
+    }
+
+    private function getTaskType(array $answers): TaskType
+    {
+        $answers = collect($answers);
+
+        $trueAnswers = $answers->filter(fn($answer) => $answer['IsAnswer']);
+
+        if ($trueAnswers->count() === 1) return TaskType::OneAnswer;
+
+        return TaskType::MultipleAnswers;
     }
 }

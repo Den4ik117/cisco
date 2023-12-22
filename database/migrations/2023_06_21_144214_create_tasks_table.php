@@ -17,10 +17,11 @@ return new class extends Migration
             $table->text('name');
             $table->string('image_content')->nullable();
             $table->string('type');
-            $table->foreignId('marathon_id')->nullable()->constrained('marathons')->cascadeOnDelete();
-            $table->foreignId('task_id')->nullable()->constrained('tasks')->cascadeOnDelete();
+//            $table->foreignId('marathon_id')->nullable()->constrained('marathons')->cascadeOnDelete();
+//            $table->foreignId('task_id')->nullable()->constrained('tasks')->cascadeOnDelete();
+            $table->foreignId('course_id')->constrained('courses')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('module_id')->nullable()->constrained('modules')->cascadeOnDelete();
-            $table->boolean('is_success')->nullable();
+//            $table->boolean('is_success')->nullable();
             $table->timestamps();
         });
     }

@@ -1,13 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Марафон по CISCO')
+@section('title', 'Марафон по курсу')
 
 @section('content')
     <div class="flex flex-col gap-4">
-
-
-        <marathon
-            :marathon='@json($marathon)'
-        ></marathon>
+        <test :test='@json($test)'></test>
     </div>
 @endsection

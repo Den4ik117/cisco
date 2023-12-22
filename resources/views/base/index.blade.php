@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Марафон по CISCO')
+@section('title', 'База по курсу')
 
 @section('content')
     <div class="flex flex-col gap-4">
-        <page-header href="{{ config('app.url')  }}" text="База"></page-header>
+        <page-header href="{{ config('app.url') }}" text="База по курсу"></page-header>
 
         <answer-finder :tasks='@json($tasks)'></answer-finder>
     </div>
